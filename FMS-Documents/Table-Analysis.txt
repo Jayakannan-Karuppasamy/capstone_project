@@ -1,0 +1,118 @@
+
+In Role Screen, Admin can add/remove PMO roles for the active cognizant employee.
+
+Empolyee_Role  -operation (Add/Remove)
+1. Employee Id - validate if employee is active / disable
+2. Role name  --- Enum
+3. Email --- Unique
+4. Firstname
+5. Lastname
+
+CREATE TABLE `testdb`.`emp_role` (
+  `emp_role_id` INT NOT NULL AUTO_INCREMENT,
+  `employee_id` `employee_id` INT NULL,
+  `emp_email_id` VARCHAR(50) NOT NULL,
+  `emp_firstname` VARCHAR(45) NULL,
+  `emp_lastname` VARCHAR(45) NULL,
+  `emp_rolename` VARCHAR(45) NULL,
+  PRIMARY KEY (`emp_role_id`),
+  UNIQUE INDEX `emp_email_id_UNIQUE` (`emp_email_id` ASC) VISIBLE)
+COMMENT = 'admin is able to submit and remove the employee role as PMO and POC from FMS-api';
+
+
+Feeback_Question - Operation (Add/Remove)
+0. QuestionId - Primary key
+1. Question  -- inputbox
+2. Total answer -- List of answer to given for above question ( admin able to add multiple answer using Add answer button. Using this click multiple times)
+3. Feedback Type - Radio button (participated/Not Participated/Unregistered)
+4. action 
+6. Question Type - Allow Multiple Answer/Free Text Answer/Custome Question
+
+CREATE TABLE `testdb`.`feedback_questions` (
+  `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(200) NULL,
+  `feebback_type` VARCHAR(50) NULL,
+  `question_type` VARCHAR(50) NULL,
+  PRIMARY KEY (`question_id`))
+COMMENT = 'list of question configured by admin form FMS-api.';
+
+Feedback_Answer
+1. AnswerId - Primary key - auto increment
+2. QuestionId - forgein key Table Feedback_Question
+3. answers - varchar(250)
+
+CREATE TABLE `testdb`.`feedback_answer` (
+  `answer_id` INT NOT NULL AUTO_INCREMENT,
+  `question_id` INT NULL,
+  `feedback_answers` VARCHAR(250) NULL,
+  PRIMARY KEY (`answer_id`),
+  INDEX `feedback_answerid_idx` (`question_id` ASC) VISIBLE,
+  CONSTRAINT `feedback_answerid`
+    FOREIGN KEY (`question_id`)
+    REFERENCES `testdb`.`feedback_questions` (`question_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+COMMENT = 'multiple answer configured by admin from FMS-api with related with feedback question.';
+-------------------------------------------------------------------------------------------------------
+
+Participated_Feedback - Opeartion (Add)
+0. ParticipateId - primarkey auto increment
+1. Employee Id - integer (forgein key....?) 
+2. Event Id - Integer. get value from email link  (forgein key....?)
+3. Rating - int  (range 1 to 5)
+4. ActivityLike - varchar(200)
+5. ActivityImproved - varchar(200)
+
+NotParticipated_Feedback
+0.
+1. Employee_Id - Integer
+2. Event_Id - Integer
+3. question_Id - Integer
+4. answer_Id - Integer
+
+
+Unregistered_Feedback
+0.
+1.Employee_Id
+2.Event_Id
+3.Question_Id
+4.Answer_Id
+
+VolunteerEnrollmentDetailsUnregistered_notattend Description
+-------------------------------------------------------------------------------------------------
+0. Participated Status		| Enrollment Attend		|Enrollment Registered		|
+-------------------------------------------------------------------------------------------------
+1. Participated			| Y				| Y				|
+2. Participated			| N				| Y				|
+3. Participated			| N				| N				|
+4. Participated			| Y				| N				|
+-------------------------------------------------------------------------------------------------
+
+Not_attend  : Event Id, Event Name, Beneficiary Name, Base Location, Event date, Employee Id, Enrollment Registered, Enrollment Attend
+UnRegistered: Event Id, Event Name, Beneficiary Name, Base Location, Event date, Employee Id, Enrollment Registered, Enrollment Attend
+Condition check : EventId, Employee Id, Event Date
+
+single table : Operation processed by 2 file
+
+CREATE TABLE `volunteerenrollmentdetail_notattend` (
+  `enrollnotattendId` int NOT NULL AUTO_INCREMENT,
+  `eventId` varchar(50) DEFAULT NULL,
+  `eventName` varchar(50) DEFAULT NULL,
+  `beneficiaryName` varchar(50) DEFAULT NULL,
+  `baseLocation` varchar(50) DEFAULT NULL,
+  `eventDate` date DEFAULT NULL,
+  `EmployeeId` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`enrollnotattendId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  
+CREATE TABLE `volunteerenrollmentdetails_unregistered` (
+  `enrollUnregisteredId` int NOT NULL AUTO_INCREMENT,
+  `eventId` varchar(50) DEFAULT NULL,
+  `eventName` varchar(50) DEFAULT NULL,
+  `beneficiaryName` varchar(50) DEFAULT NULL,
+  `baseLocation` varchar(50) DEFAULT NULL,
+  `eventDate` date DEFAULT NULL,
+  `EmployeeId` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`enrollUnregisteredId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
